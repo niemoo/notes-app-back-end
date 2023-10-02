@@ -3,8 +3,10 @@ const notes = require('./notes');
 
 // FOR ADD NOTES WITH METHOD POST
 const addNotesHandler = (req, h) => {
+  // GET BODY REQUEST
   const { title, tags, body } = req.payload;
 
+  // GET VALUE FOR id, createdAt, updatedAt
   const id = nanoid(16);
   const createdAt = new Date().toISOString();
   const updatedAt = createdAt;
@@ -22,6 +24,7 @@ const addNotesHandler = (req, h) => {
 
   const isSuccess = notes.filter((note) => note.id === id).length > 0;
 
+  // IF SUCCESS ADD NOTES
   if (isSuccess) {
     const response = h.response({
       status: 'success',
@@ -34,6 +37,7 @@ const addNotesHandler = (req, h) => {
     return response;
   }
 
+  // IF FAIL ADD NOTES
   const response = h.response({
     status: 'fail',
     message: 'Catatan gagal ditambahkan',
