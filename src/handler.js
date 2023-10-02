@@ -28,7 +28,7 @@ const addNotesHandler = (req, h) => {
   if (isSuccess) {
     const response = h.response({
       status: 'success',
-      message: 'Catatan berhasil ditambahkan',
+      message: 'Note added successfully',
       data: {
         noteId: id,
       },
@@ -40,13 +40,13 @@ const addNotesHandler = (req, h) => {
   // IF FAIL ADD NOTES
   const response = h.response({
     status: 'fail',
-    message: 'Catatan gagal ditambahkan',
+    message: 'Note failed to add',
   });
   response.code(500);
   return response;
 };
 
-// FOR SHOW NOTES WITH METHOD GET
+// FOR SHOW ALL NOTES IN HOME WITH METHOD GET
 const getAllNotesHandler = () => ({
   status: 'success',
   data: {
@@ -54,4 +54,27 @@ const getAllNotesHandler = () => ({
   },
 });
 
-module.exports = { addNotesHandler, getAllNotesHandler };
+const getNoteByIdHandler = (req, h) => {
+  const { id } = req.params;
+
+  const note = notes.filter((n) => n.id === id)[0];
+
+  if (note !== undefined) {
+    return {
+      status: 'success',
+      data: {
+        note,
+      },
+    };
+  }
+
+  const response = h.response({
+    status: 'fail',
+    message: 'Notes not found',
+  });
+
+  response.code(404);
+  return response;
+};
+
+module.exports = { addNotesHandler, getAllNotesHandler, getNoteByIdHandler };
