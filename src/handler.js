@@ -1,7 +1,7 @@
 const { nanoid } = require('nanoid');
 const notes = require('./notes');
 
-// FOR ADD NOTES WITH METHOD POST
+// FUNC ADD NOTES WITH METHOD POST
 const addNotesHandler = (req, h) => {
   // GET BODY REQUEST
   const { title, tags, body } = req.payload;
@@ -46,7 +46,7 @@ const addNotesHandler = (req, h) => {
   return response;
 };
 
-// FOR SHOW ALL NOTES IN HOME WITH METHOD GET
+// FUNC FOR SHOW ALL NOTES IN HOME WITH METHOD GET
 const getAllNotesHandler = () => ({
   status: 'success',
   data: {
@@ -54,7 +54,7 @@ const getAllNotesHandler = () => ({
   },
 });
 
-// SHOW NOTES IN NOTES OWN PAGE WITH METHOD GET
+// FUNC SHOW NOTES IN NOTES OWN PAGE WITH METHOD GET
 const getNoteByIdHandler = (req, h) => {
   const { id } = req.params;
 
@@ -78,6 +78,7 @@ const getNoteByIdHandler = (req, h) => {
   return response;
 };
 
+// FUNC EDIT NOTES
 const editNoteByIdHandler = (req, h) => {
   const { id } = req.params;
 
@@ -87,6 +88,7 @@ const editNoteByIdHandler = (req, h) => {
   // SEARCH NOTES INDEX BY ID
   const index = notes.findIndex((note) => note.id === id);
 
+  // IF INDEX NOT FOUND THEN RETURN -1
   if (index !== -1) {
     notes[index] = {
       ...notes[index],
@@ -96,6 +98,7 @@ const editNoteByIdHandler = (req, h) => {
       updatedAt,
     };
 
+    // IF EDIT SUCCESS
     const response = h.response({
       status: 'success',
       message: 'Note updated successfully',
@@ -105,6 +108,7 @@ const editNoteByIdHandler = (req, h) => {
     return response;
   }
 
+  // IF ID NOT FOUND
   const response = h.response({
     status: 'fail',
     message: 'Failed to update record. ID not found',
@@ -114,4 +118,37 @@ const editNoteByIdHandler = (req, h) => {
   return response;
 };
 
-module.exports = { addNotesHandler, getAllNotesHandler, getNoteByIdHandler, editNoteByIdHandler };
+// FUNC FOR DELETE NOTE BY ID
+const deleteNoteByIdHandler = (req, h) => {
+  const { id } = req.params;
+
+  const index = notes.findIndex((note) => note.id === id);
+
+  if (index !== -1) {
+    notes.splice(index, 1);
+
+    const response = h.response({
+      status: 'success',
+      message: 'Note deleted successfully',
+    });
+
+    response.code(200);
+    return response;
+  }
+
+  const response = h.response({
+    status: 'fail',
+    message: 'Note failed to delete. ID not found',
+  });
+
+  response.code(404);
+  return response;
+};
+
+module.exports = {
+  addNotesHandler,
+  getAllNotesHandler,
+  getNoteByIdHandler,
+  editNoteByIdHandler,
+  deleteNoteByIdHandler,
+};
