@@ -54,6 +54,7 @@ const getAllNotesHandler = () => ({
   },
 });
 
+// SHOW NOTES IN NOTES OWN PAGE WITH METHOD GET
 const getNoteByIdHandler = (req, h) => {
   const { id } = req.params;
 
@@ -77,4 +78,40 @@ const getNoteByIdHandler = (req, h) => {
   return response;
 };
 
-module.exports = { addNotesHandler, getAllNotesHandler, getNoteByIdHandler };
+const editNoteByIdHandler = (req, h) => {
+  const { id } = req.params;
+
+  const { title, tags, body } = req.payload;
+  const updatedAt = new Date().toISOString();
+
+  // SEARCH NOTES INDEX BY ID
+  const index = notes.findIndex((note) => note.id === id);
+
+  if (index !== -1) {
+    notes[index] = {
+      ...notes[index],
+      title,
+      tags,
+      body,
+      updatedAt,
+    };
+
+    const response = h.response({
+      status: 'success',
+      message: 'Note updated successfully',
+    });
+
+    response.code(200);
+    return response;
+  }
+
+  const response = h.response({
+    status: 'fail',
+    message: 'Failed to update record. ID not found',
+  });
+
+  response.code(404);
+  return response;
+};
+
+module.exports = { addNotesHandler, getAllNotesHandler, getNoteByIdHandler, editNoteByIdHandler };
